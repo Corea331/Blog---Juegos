@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de artículos del Blog</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'blog/css/estilos_blog.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>Artículos del Blog</h1>
+
+        {% if articulos %}
+            {% for articulo in articulos %}
+                <div class="articulo-item">
+                    <h2><a href="#">{{ articulo.titulo }}</a></h2>
+                    {% if articulo.subtitulo %}
+                        <p><em>{{ articulo.subtitulo }}</em></p>
+                    {% endif %}
+                    <div class="articulo-meta">
+                        Publicado el {{ articulo.fecha_publicacion|date:"d M Y" }}
+                        {% if articulo.autor %}
+                            por {{ articulo.autor.username }}
+                        {% endif %}
+                        {% if articulo.categoria %}
+                            en {{ articulo.categoria.nombre }}
+                        {% endif %}
+                    </div>
+                    <div class="articulo-content">
+                        <p>{{ articulo.contenido|truncatechars:200 }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p class="no-articulos">No hay artículos publicados en este momento.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

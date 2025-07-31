@@ -26,6 +26,8 @@ urlpatterns = [
     path('', HomeView.as_view(), name='home'),
     path('users/', include('apps.users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
+    path('blog/', include('apps.blog.urls')),
+    # path('games/', include('apps.games.urls')),
 ] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 urlpatterns += staticfiles_urlpatterns()
