@@ -14,7 +14,7 @@
         {% if articulos %}
             {% for articulo in articulos %}
                 <div class="articulo-item">
-                    <h2><a href="#">{{ articulo.titulo }}</a></h2>
+                    <h2><a href="{% url 'blog:detalle_articulo' articulo.pk %}">{{ articulo.titulo }}</a></h2>
                     {% if articulo.subtitulo %}
                         <p><em>{{ articulo.subtitulo }}</em></p>
                     {% endif %}

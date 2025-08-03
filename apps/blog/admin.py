@@ -23,7 +23,7 @@ class ArticuloAdmin(admin.ModelAdmin):
     raw_id_fields = ('autor', 'categoria') # Para campos ForeignKey, mejora la UX en el admin
     fieldsets = (
         (None, {
-            'fields': ('titulo', 'subtitulo', 'contenido', 'imagen_principal')
+            'fields': ('titulo', 'subtitulo', 'contenido', 'imagen_principal', 'imagen_url')
         }),
         ('Información Adicional', {
             'fields': ('autor', 'categoria', 'fecha_publicacion', 'activo'),

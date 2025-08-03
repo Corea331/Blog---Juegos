@@ -1,3 +1,7 @@
+
+/* Estilos generales */
+
+
 body {
     font-family: Arial, sans-serif;
     margin: 20px;
@@ -61,5 +65,36 @@ h1 {
     text-align: center;
     color: #888;
     padding: 50px;
+}
+
+
+/* Estilos específicos para el detalle del artículo */
+
+
+.articulo-meta {
+    font-style: italic;
+}
+.articulo-imagen {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    display: block;
+}
+.articulo-content p {
+    line-height: 1.8;
+    font-size: 1.1em;
+}
+.back-link {
+    display: inline-block;
+    margin-top: 20px;
+    color: #007bff;
+    text-decoration: none;
+    font-weight: bold;
+}
+.back-link:hover {
+    text-decoration: underline;
 }
 

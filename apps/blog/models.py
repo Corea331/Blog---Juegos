@@ -28,8 +28,7 @@ class Articulo(models.Model):
     contenido = models.TextField(verbose_name="Contenido")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     fecha_publicacion = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Publicación")
-    activo = models.BooleanField(default=True, verbose_name="Activo")
-    imagen_principal = models.ImageField(upload_to='blog_images/', blank=True, null=True, verbose_name="Imagen Principal")
+    activo = models.BooleanField(default=True, verbose_name="Activo")    
 
     autor = models.ForeignKey(
         User,
@@ -48,6 +47,22 @@ class Articulo(models.Model):
         related_name='articulos', # Nombre inverso para acceder desde Categoria_blog
         verbose_name="Categoría"
     )
+
+    # Campo para subir una imagen directamente
+    imagen_principal = models.ImageField(
+        upload_to='blog_images/', 
+        blank=True, 
+        null=True,
+        verbose_name="Imagen Principal (Archivo)"
+    )
+    
+    # Nuevo campo para almacenar una URL de imagen
+    imagen_url = models.URLField(
+        blank=True,
+        null=True,
+        verbose_name="Imagen Principal (URL)"
+    )
+
 
     class Meta:
         verbose_name = "Artículo"

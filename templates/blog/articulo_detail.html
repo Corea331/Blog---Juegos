@@ -1,0 +1,46 @@
+
+
+<!DOCTYPE html>
+<html lang="es-ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ object.titulo }}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'blog/css/estilos_blog.css' %}">
+</head>
+<body>
+    <div class="container">
+        <h1>{{ object.titulo }}</h1>
+        {% if object.subtitulo %}
+            <p><em>{{ object.subtitulo }}</em></p>
+        {% endif %}
+
+        <p class="articulo-meta">
+            Publicado el {{ object.fecha_publicacion|date:"d M Y" }}
+            {% if object.autor %}
+                por {{ object.autor.username }}
+            {% endif %}
+            {% if object.categoria %}
+                en {{ object.categoria.nombre }}
+            {% endif %}
+        </p>
+
+        <div class="articulo-content">
+            <!-- Lógica para mostrar la imagen (prioriza la URL sobre el archivo) -->
+            {% if object.imagen_url %}
+                <img src="{{ object.imagen_url }}" alt="{{ object.titulo }}" class="articulo-imagen">
+            {% elif object.imagen_principal %}
+                <img src="{{ object.imagen_principal.url }}" alt="{{ object.titulo }}" class="articulo-imagen">
+            {% else %}
+                <img src="https://placehold.co/900x400/2980b9/ffffff?text=No+Imagen" alt="Sin imagen disponible" class="articulo-imagen">
+            {% endif %}
+
+            {{ object.contenido|linebreaks }}
+        </div>
+        
+        <!-- Enlace para volver a la lista -->
+        <a href="{% url 'blog:lista_articulos' %}" class="back-link">&larr; Volver a los artículos</a>
+    </div>
+</body>
+</html>
