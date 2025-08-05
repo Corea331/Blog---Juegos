@@ -29,7 +29,9 @@
             </ul>
             <ul class="nav nav-underline">
                 {% if user.is_authenticated %}
-                <!-- El enlace del perfil solo aparece si el usuario está autenticado -->
+                <li class="nav-item">
+                    <a class="nav-link {% if '/users/perfil' in request.path %} active {% endif %}" href="{% url 'apps.users:perfil' %}">Perfil</a>
+                </li>
                 <li class="nav-item">
                     <form action="{% url 'apps.users:logout' %}" method="post">
                         {% csrf_token %}

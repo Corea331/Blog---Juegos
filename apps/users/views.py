@@ -1,10 +1,10 @@
 from django.contrib.auth.views import LoginView, LogoutView
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from django.contrib import messages
 from django.shortcuts import redirect
 from django.urls import reverse
 from .forms import RegisterUserForm
-
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 class RegisterUser(CreateView):
     template_name = 'registration/register.html'
@@ -32,3 +32,8 @@ class LogoutUser(LogoutView):
         messages.success(self.request, 'Logout exitoso.')
 
         return reverse('apps.users:logout')
+    
+#Agrego vista para el perfil
+class ProfileView(LoginRequiredMixin, TemplateView):
+    #LoginRequiredMixin asegura que solo los usuarios autenticados puedan acceder a esta vista.
+    template_name = 'users/profile.html'
