@@ -1,46 +1,50 @@
+{% extends 'base.html' %}
+{% load static %}
 
+{% block title %}
+    {{ object.titulo }}
+{% endblock title %}
 
-<!DOCTYPE html>
-<html lang="es-ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{ object.titulo }}</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'blog/css/estilos_blog.css' %}">
-</head>
-<body>
-    <div class="container">
+{% block contenido %}
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <!-- Título del artículo -->
         <h1>{{ object.titulo }}</h1>
         {% if object.subtitulo %}
             <p><em>{{ object.subtitulo }}</em></p>
         {% endif %}
 
-        <p class="articulo-meta">
-            Publicado el {{ object.fecha_publicacion|date:"d M Y" }}
-            {% if object.autor %}
-                por {{ object.autor.username }}
-            {% endif %}
-            {% if object.categoria %}
-                en {{ object.categoria.nombre }}
-            {% endif %}
+        <!-- Metadatos del artículo -->
+        <p class="card-text">
+            <small class="text-muted">
+                Publicado el {{ object.fecha_publicacion|date:"d M Y" }}
+                {% if object.autor %}
+                    por {{ object.autor.username }}
+                {% endif %}
+                {% if object.categoria %}
+                    en {{ object.categoria.nombre }}
+                {% endif %}
+            </small>
         </p>
+
+        <hr>
 
         <div class="articulo-content">
             <!-- Lógica para mostrar la imagen (prioriza la URL sobre el archivo) -->
             {% if object.imagen_url %}
-                <img src="{{ object.imagen_url }}" alt="{{ object.titulo }}" class="articulo-imagen">
+                <img src="{{ object.imagen_url }}" alt="{{ object.titulo }}" class="articulo-imagen img-fluid rounded mb-3">
             {% elif object.imagen_principal %}
-                <img src="{{ object.imagen_principal.url }}" alt="{{ object.titulo }}" class="articulo-imagen">
+                <img src="{{ object.imagen_principal.url }}" alt="{{ object.titulo }}" class="articulo-imagen img-fluid rounded mb-3">
             {% else %}
-                <img src="https://placehold.co/900x400/2980b9/ffffff?text=No+Imagen" alt="Sin imagen disponible" class="articulo-imagen">
+                <img src="https://placehold.co/900x400/2980b9/ffffff?text=No+Imagen" alt="Sin imagen disponible" class="articulo-imagen img-fluid rounded mb-3">
             {% endif %}
 
+            <!-- El contenido del artículo, ahora con el filtro 'linebreaks' para mantener los saltos de línea -->
             {{ object.contenido|linebreaks }}
         </div>
         
-        <!-- Enlace para volver a la lista -->
-        <a href="{% url 'blog:lista_articulos' %}" class="back-link">&larr; Volver a los artículos</a>
+        <!-- Enlace para volver a la lista de artículos -->
+        <a href="{% url 'blog:lista_articulos' %}" class="btn btn-secondary mt-3">&larr; Volver a los artículos</a>
     </div>
-</body>
-</html>
+</div>
+{% endblock contenido %}

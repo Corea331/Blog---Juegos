@@ -16,40 +16,44 @@
         <a class=" bg-secondary text-center nav-link active" href="#">
             <img src="" alt="" style="max-width: 300px; margin: 30px;">
         </a>
-        <div class="d-flex bg-primary-subtle justify-content-start px-3 py-2">
+
+         <nav class="d-flex bg-primary-subtle justify-content-between px-3 py-2">
             <ul class="nav nav-underline">
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'home' %}">Inicio</a>
                 </li>
+                <!-- Se agrega el enlace al blog para consistencia -->
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/users/register/' %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrase</a>
+                    <a class="nav-link {% if '/blog' in request.path %} active {% endif %}" href="{% url 'blog:lista_articulos' %}">Blog</a>
                 </li>
             </ul>
-        </div>
-        <div class="d-flex bg-primary-subtle justify-content-end px-3 py-2">
             <ul class="nav nav-underline">
                 {% if user.is_authenticated %}
+                <!-- El enlace del perfil solo aparece si el usuario está autenticado -->
                 <li class="nav-item">
                     <form action="{% url 'apps.users:logout' %}" method="post">
                         {% csrf_token %}
-                        <button type="submit" class="btn nav-link btn-danger" href="">Logout</button>
+                        <button type="submit" class="btn nav-link btn-danger">Logout</button>
                     </form>
                 </li>
                 {% else %}
                 <li class="nav-item">
-                    <a class="nav-link {% if request.path == '/users/login/' %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
+                    <!-- Enlace de registro, usando 'register' como en tu urls.py -->
+                    <a class="nav-link {% if '/users/register' in request.path %} active {% endif %}" href="{% url 'apps.users:register' %}">Registrarse</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if '/users/login' in request.path %} active {% endif %}" href="{% url 'apps.users:login' %}">Login</a>
                 </li>
                 {% endif %}
             </ul>
-        </div>
+        </nav>
     </header>
+    
     <main class="container-flid">
-
-    {% block contenido %}
-
-    {% endblock %}
-
+        {% block contenido %}
+        {% endblock %}
     </main>
+    
     <footer id="sticky-footer" class="flex-shrink-0 bg-dark py-4 text-white-50">
         <div class="container text-center">
             <small>Copyright &copy; Blog-Juegos</small>

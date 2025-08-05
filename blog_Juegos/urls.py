@@ -21,12 +21,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', HomeView.as_view(), name='home'),
     path('users/', include('apps.users.urls')),
     path('auth/', include('django.contrib.auth.urls')),
     path('blog/', include('apps.blog.urls')),
+    
     # path('games/', include('apps.games.urls')),
 ] 
 

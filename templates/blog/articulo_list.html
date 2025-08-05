@@ -1,24 +1,29 @@
-<!DOCTYPE html>
-<html lang="es-ar">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de artículos del Blog</title>
-    {% load static %}
-    <link rel="stylesheet" href="{% static 'blog/css/estilos_blog.css' %}">
-</head>
-<body>
-    <div class="container">
-        <h1>Artículos del Blog</h1>
+{% extends 'base.html' %}
+{% load static %}
 
-        {% if articulos %}
-            {% for articulo in articulos %}
-                <div class="articulo-item">
-                    <h2><a href="{% url 'blog:detalle_articulo' articulo.pk %}">{{ articulo.titulo }}</a></h2>
-                    {% if articulo.subtitulo %}
-                        <p><em>{{ articulo.subtitulo }}</em></p>
-                    {% endif %}
-                    <div class="articulo-meta">
+{% block title %}
+    Blog de Juegos
+{% endblock title %}
+
+{% block contenido %}
+<div class="container mt-4">
+    <h1 class="mb-4">Lista de Artículos</h1>
+    <hr class="mb-5">
+
+    {% for articulo in articulos %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-body">
+                <h2 class="card-title">
+                    <a href="{% url 'blog:detalle_articulo' pk=articulo.pk %}" class="text-decoration-none text-dark">
+                        {{ articulo.titulo }}
+                    </a>
+                </h2>
+                {% if articulo.subtitulo %}
+                    <p class="card-subtitle mb-2 text-muted">{{ articulo.subtitulo|default_if_none:"" }}</p>
+                {% endif %}
+
+                <p class="card-text">
+                    <small class="text-muted">
                         Publicado el {{ articulo.fecha_publicacion|date:"d M Y" }}
                         {% if articulo.autor %}
                             por {{ articulo.autor.username }}
@@ -26,15 +31,22 @@
                         {% if articulo.categoria %}
                             en {{ articulo.categoria.nombre }}
                         {% endif %}
-                    </div>
-                    <div class="articulo-content">
-                        <p>{{ articulo.contenido|truncatechars:200 }}</p>
-                    </div>
+                    </small>
+                </p>
+                
+                <div class="articulo-content">
+                    <p>{{ articulo.contenido|truncatechars:200 }}</p>
                 </div>
-            {% endfor %}
-        {% else %}
-            <p class="no-articulos">No hay artículos publicados en este momento.</p>
-        {% endif %}
-    </div>
-</body>
-</html>
+
+                <a href="{% url 'blog:detalle_articulo' pk=articulo.pk %}" class="btn btn-primary mt-2">
+                    Leer más
+                </a>
+            </div>
+        </div>
+    {% empty %}
+        <div class="alert alert-info text-center" role="alert">
+            <p>No hay artículos publicados en este momento.</p>
+        </div>
+    {% endfor %}
+</div>
+{% endblock contenido %}
