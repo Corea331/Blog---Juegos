@@ -17,7 +17,7 @@
             <img src="" alt="" style="max-width: 300px; margin: 30px;">
         </a>
 
-         <nav class="d-flex bg-primary-subtle justify-content-between px-3 py-2">
+        <nav class="d-flex bg-primary-subtle justify-content-between px-3 py-2">
             <ul class="nav nav-underline">
                 <li class="nav-item">
                     <a class="nav-link {% if request.path == '/' %} active {% endif %}" href="{% url 'home' %}">Inicio</a>
@@ -51,14 +51,14 @@
         </nav>
     </header>
     
-    <main class="container-flid">
+    <main class="container-fluid">
         {% block contenido %}
         {% endblock %}
     </main>
     
     <footer id="sticky-footer" class="flex-shrink-0 bg-dark py-4 text-white-50">
         <div class="container text-center">
-            <small>Copyright &copy; Blog-Juegos</small>
+            <small>Copyright &#9400; Blog-Juegos &beta;&gamma; Grupo 1 - Comisión 5 </small>
         </div>
     </footer>
     <!-- Bootstrap JavaScript Libraries -->

@@ -97,7 +97,7 @@ class Puntuacion(models.Model):
     def __str__(self):
         return f"{self.usuario.username} puntuó {self.juego.titulo} con {self.valor}"
 
-  
+
 class Comentario(models.Model):
     juego = models.ForeignKey(Juego, on_delete=models.CASCADE, verbose_name="Juego")
     usuario = models.ForeignKey(

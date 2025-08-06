@@ -6,7 +6,7 @@ from .models import Categoria_blog, Articulo
 
 @admin.register(Categoria_blog)
 class CategoriaBlogAdmin(admin.ModelAdmin):
-  
+
     list_display = ('nombre', 'descripcion', 'id_categoria')
     search_fields = ('nombre',) 
     list_filter = ('nombre',) 
@@ -14,7 +14,7 @@ class CategoriaBlogAdmin(admin.ModelAdmin):
 
 @admin.register(Articulo)
 class ArticuloAdmin(admin.ModelAdmin):
-  
+
     list_display = ('titulo', 'autor', 'categoria', 'fecha_publicacion', 'activo')
     list_filter = ('activo', 'categoria', 'autor', 'fecha_publicacion')
     search_fields = ('titulo', 'subtitulo', 'contenido', 'autor__username', 'categoria__nombre')
