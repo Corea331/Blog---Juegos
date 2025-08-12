@@ -5,7 +5,7 @@
 
 {% block contenido %}
 
-<div class="container mt-4">
+<div class="container mt-5">
     <div class="d-flex juestify-content-between align-items-center mb-4">
         <h1>Listado de Juegos</h1>
         {% if user.is_authenticated and user.es_colaborador %} 
@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-trasparent">
-                    <a href="{{ url 'apps.games:detalle_juego' }}" class="btn btn-sm btn-outline-primary">
+                    <a href="{% url 'apps.games:detalle_juego' %}" class="btn btn-sm btn-outline-primary">
                         Ver detalle
                     </a>
                 </div>
