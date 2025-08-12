@@ -6,10 +6,10 @@
 {% block contenido %}
 
 <div class="container mt-5">
-    <div class="d-flex juestify-content-between align-items-center mb-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Listado de Juegos</h1>
         {% if user.is_authenticated and user.es_colaborador %} 
-        <a href="{% url 'apps.games:agregar_juego' %}" class="btn btn-primary">
+        <a href="{% url 'apps.games:agregar_juego' %}">
             <i class="fas fa-plus"></i> Agregar Juego
         </a>
         {% endif %}

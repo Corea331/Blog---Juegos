@@ -48,7 +48,7 @@ class RegisterUserView(CreateView):
 class UpdateUserView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = User
     form_class = UpdateUserForm
-    template_name = 'account/signup.html'
+    template_name = 'account/update_user.html'
     success_url = reverse_lazy('index')
 
     def test_func(self):

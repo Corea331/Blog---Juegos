@@ -28,15 +28,15 @@
                         {{ item.username }}
                     </td>
                     <td>
-                        {{ item.nombre }}, {{ item. apellido }}
+                        {{ item.nombre }}, {{ item.apellido }}
                     </td>
                     <td>
-                        item.email
+                        {{ item.email }}
                     </td>
                     <td>
                         {% if item.is_superuser %}
                         <span class="badge bg danger">Superusuario</span>
-                        {% elif %}
+                        {% elif item.es_colaborador %}
                         <span class="badge bg-warnin">Colaborador</span>
                         {% else %}
                         <span class="badge bg-secondary">Usuario</span>

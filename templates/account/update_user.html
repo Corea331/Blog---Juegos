@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+
+<title>{% block title %} Editar Perfil {% endblock %}</title>
+
+{% block contenido %}
+
+<div class="container mb-5 mt-5">
+    
+    <div class="row justify-content-center">
+        <center>
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="text-center mb-0">Editar Perfil</h3>
+                </div>
+                <div class="card-body bg-dark-subtle">
+                    {% if messages %}
+                    <div class="alert messages">
+                        {% for message in messages %}
+                        <div class="alert alert- alert-dismissible fade show" role="alert">
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <form enctype="multipart/form-data" method="post">
+                        {% csrf_token %}
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.username|as_crispy_field:"bootstrap5" }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.email|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.nombre|as_crispy_field:"bootstrap5" }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ form.apellido|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                {{ form.fecha_nacimiento|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        </div>
+                        <div class="row">
+                                {{ form.imagen|as_crispy_field:"bootstrap5" }}
+                            </div>
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg">Guardar cambios</button>
+                        </div>
+                    </form>
+                    <div class="text-center mt-3">
+                        <p>¿Quieres cambiar tu contraseña? <a href="{% url 'apps.users:password_reset' %}">Haz clic aquí</a></p>
+                        <p><a href="{% url 'apps.users:profile' %}">Volver al perfil</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </center>
+    </div>
+    
+</div>
+
+{% endblock %}
