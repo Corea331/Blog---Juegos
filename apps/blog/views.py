@@ -90,7 +90,7 @@ class ArticuloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ArticuloDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Articulo
     fields = ['titulo', 'subtitulo', 'contenido', 'categoria', 'imagen_principal', 'imagen_url' ]
-    template_name = 'blog/articulo_form.html'
+    template_name = 'confirmar_eliminar.html'
 
     def test_func(self):
         articulo = self.get_object()
@@ -117,7 +117,7 @@ def aprobar_comentario(request, pk):
 class ComentarioCreateView(LoginRequiredMixin, CreateView):
     model = ComentarioArticulo
     form_class = ComentarioForm
-    template_name = 'blog/comentario_form.html'
+    template_name = 'comentario_form.html'
 
     def form_valid(self, form):
         form.instance.usuario = self.request.user
@@ -136,7 +136,7 @@ class ComentarioCreateView(LoginRequiredMixin, CreateView):
 class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = ComentarioArticulo
     form_class = ComentarioForm
-    template_name = 'blog/comentario_form.html'
+    template_name = 'comentario_form.html'
 
     def test_func(self):
         return self.get_object().puede_editar(self.request.user)

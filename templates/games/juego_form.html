@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block contenido %}
+
+<div class="container mt-4">
+    <h2>{% if object %}Editar{% else %}Agregar{% endif %} Juego</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <!-- Información básica -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Información Básica</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="titulo" class="form-label">Título*</label>
+                    <input type="text" class="form-control" id="titulo" name="titulo" 
+                        value="{{ form.titulo.value|default_if_none:'' }}" required>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción*</label>
+                    <textarea class="form-control" id="descripcion" name="descripcion" 
+                            rows="4" required>{{ form.descripcion.value|default_if_none:'' }}</textarea>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="fecha_lanzamiento" class="form-label">Fecha de Lanzamiento*</label>
+                        <input type="date" class="form-control" id="fecha_lanzamiento" name="fecha_lanzamiento" 
+                            value="{{ form.fecha_lanzamiento.value|date:'Y-m-d'|default_if_none:'' }}" required>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="desarrollador" class="form-label">Desarrollador</label>
+                        <input type="text" class="form-control" id="desarrollador" name="desarrollador" 
+                            value="{{ form.desarrollador.value|default_if_none:'' }}">
+                    </div>
+                </div>
+                
+                <div class="mb-3">
+                    <label for="editor" class="form-label">Editor</label>
+                    <input type="text" class="form-control" id="editor" name="editor" 
+                        value="{{ form.editor.value|default_if_none:'' }}">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Plataformas y Géneros -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Clasificación</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6 mb-3">
+                        <label for="plataformas" class="form-label">Plataformas*</label>
+                        <select class="form-select" id="plataformas" name="plataformas" multiple required style="min-height: 150px;">
+                            {% for plataforma in plataformas %}
+                                <option value="{{ plataforma.id }}" 
+                                        {% if plataforma in form.plataformas.value %}selected{% endif %}>
+                                    {{ plataforma.nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="col-md-6 mb-3">
+                        <label for="generos" class="form-label">Géneros*</label>
+                        <select class="form-select" id="generos" name="generos" multiple required style="min-height: 150px;">
+                            {% for genero in generos %}
+                                <option value="{{ genero.id }}" 
+                                        {% if genero in form.generos.value %}selected{% endif %}>
+                                    {{ genero.nombre }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Multimedia -->
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Multimedia</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="imagen_portada" class="form-label">Imagen de Portada</label>
+                    <input class="form-control" type="file" id="imagen_portada" name="imagen_portada">
+                    {% if object and object.imagen_portada %}
+                        <div class="mt-2">
+                            <small class="text-muted">Imagen actual:</small>
+                            <img src="{{ object.imagen_portada.url }}" class="img-thumbnail mt-1" style="max-height: 100px;">
+                        </div>
+                    {% endif %}
+                </div>
+                
+                <div class="mb-3">
+                    <label for="video_trailer_url" class="form-label">URL del Trailer (YouTube)</label>
+                    <input type="url" class="form-control" id="video_trailer_url" name="video_trailer_url" 
+                        value="{{ form.video_trailer_url.value|default_if_none:'' }}">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Estado -->
+        {% if object %}
+        <div class="card mb-4 shadow-sm">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Estado</h5>
+            </div>
+            <div class="card-body">
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="activo" name="activo" 
+                        {% if form.activo.value %}checked{% endif %}>
+                    <label class="form-check-label" for="activo">Publicado</label>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
+            <button type="submit" class="btn btn-primary me-md-2">
+                <i class="fas fa-save"></i> Guardar
+            </button>
+            <a href="{% url 'apps.games:lista_juegos' %}" class="btn btn-warning">
+            <i class="fas fa-circle-xmark"></i> Cancelar
+            </a>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
