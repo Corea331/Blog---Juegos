@@ -14,7 +14,7 @@ class User(AbstractUser):
     email = models.EmailField(null=False, unique=True)
     fecha_nacimiento = models.DateField(verbose_name='fecha nacimiento', default=date(2000, 1, 1))
     es_colaborador = models.BooleanField(verbose_name='es colaborador', default=False)
-    imagen = models.ImageField(null=True, blank=True, upload_to='usuario', default='usuario/user-default.jpg')
+    imagen = models.ImageField(null=True, blank=True, upload_to='usuario/', default='usuario/user-default.jpg')
 
     def save(self, *args, **kwargs):
         if self.imagen and self.imagen.name != 'usuario/user-default.jpg':
@@ -22,7 +22,7 @@ class User(AbstractUser):
                 img = Image.open(self.imagen)
                 if img.height > 300 or img.width > 300:
                     img.thumbnail((300, 300))
-        
+
                 output = io.BytesIO()
                 img.save(output, format='JPEG', quality=85)
                 output.seek(0)
@@ -48,7 +48,7 @@ class User(AbstractUser):
         permissions = [
             ('es_colaborador', 'Puede editar y crear contenido'),
             ('puede_eliminar_usuario', 'Puede eliminar usuarios no superusuarios'),
-        ] 
+        ]
 
     def clean(self):
         super().clean()
@@ -57,7 +57,7 @@ class User(AbstractUser):
 
         if self.email and '@' not in self.email:
             raise ValidationError('Ingrese un email válido')
-        
+
         if User.objects.filter(email__iexact=self.email).exclude(pk=self.pk).exists():
             raise ValidationError('Este email ya está registrado')
 

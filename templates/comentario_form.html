@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load crispy_forms_tags %}
 
-<title>{% block title %}Comentario{% endblock %}</title>
+<title>{% block title %}Comentar{% endblock %}</title>
 
 {% block contenido %}
 <div class="container mt-4">
@@ -28,7 +28,7 @@
                                         {% url 'apps.games:detalle_juego' form.instance.juego.pk %}
                                     {% else %}
                                         {% url 'index' %}
-                                    {% endif %}" 
+                                    {% endif %}"
                             class="btn btn-secondary me-md-2">
                                 Cancelar
                             </a>

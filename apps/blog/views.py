@@ -7,6 +7,7 @@ from django.contrib import messages
 from .forms import ComentarioForm
 
 
+
 class ArticuloListView(ListView):
     """
     CBV para listar todos los artículos del blog pero como una preview, el usuario tiene que seleccionar y ahi se abre el detalle con la vista ArticulosDetailView que esta abajo
@@ -19,6 +20,7 @@ class ArticuloListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['total_articulos'] = self.get_queryset().count()
+        context['categorias'] = Categoria_blog.objects.all()
         return context
 
     def get_queryset(self):
@@ -26,24 +28,38 @@ class ArticuloListView(ListView):
         Sobrescribe el queryset para filtrar solo artículos activos
         y ordenarlos por fecha de publicación descendente.
         """
-        return Articulo.objects.filter(activo=True).order_by('-fecha_publicacion', '-fecha_creacion')
+        return Articulo.objects.filter(
+            activo=True
+            ).order_by('-fecha_publicacion', '-fecha_creacion')
 
 
 class ArticuloPorCategoriaView(ListView):
     model = Articulo # Modelo que voy a listar
-    template_name = 'blog/articulo_list.html'
+    template_name = 'blog/categoria_articulo_list.html'
     paginate_by = 10
+    context_object_name = 'articulos'
 
     def get_queryset(self):
-        categoria = get_object_or_404(Categoria_blog, nombre=self.kwargs['categoria'])
-        return Articulo.objects.filter(categoria=categoria, activo=True).order_by('-fecha_publicacion', '-fecha_creacion')
+        categoria_nombre = self.kwargs['categoria'].lower()
+        self.categoria = get_object_or_404(Categoria_blog, nombre__iexact=categoria_nombre)
+        return Articulo.objects.filter(
+            categoria=self.categoria,
+            activo=True
+            ).order_by('-fecha_publicacion', '-fecha_creacion')
+
+    def get_context_data(self, **kwargs):
+        context=super().get_context_data(**kwargs)
+        context['categoria'] = self.categoria.nombre
+        context['categorias'] = Categoria_blog.objects.exclude(id_categoria=self.categoria.id_categoria)
+        context['total_articulos'] = context['articulos'].count()
+        return context
 
 
 class ArticuloDetailView(DetailView):
     """
     CBV para mostrar el detalle del articulo cuando el usuario hace click
     """
-    model = Articulo 
+    model = Articulo
     template_name = 'blog/articulo_detail.html'
     # El nombre de la variable por defecto que se pasa a la plantilla es 'object' o 'articulo'
 
@@ -66,7 +82,12 @@ class ArticuloCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.es_colaborador
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria_blog.objects.all()
+        return context
+
     def form_valid(self, form):
         form.instance.autor = self.request.user
         messages.success(self.request, 'Artículo creado correctamente.')
@@ -81,7 +102,12 @@ class ArticuloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         articulo = self.get_object()
         return self.request.user.is_superuser or (self.request.user.es_colaborador and articulo.autor == self.request.user)
-    
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['categorias'] = Categoria_blog.objects.all()
+        return context
+
     def form_valid(self, form):
         messages.success(self.request, 'Artículo actualizado correctamente.')
         return super().form_valid(form)
@@ -90,12 +116,13 @@ class ArticuloUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 class ArticuloDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Articulo
     fields = ['titulo', 'subtitulo', 'contenido', 'categoria', 'imagen_principal', 'imagen_url' ]
-    template_name = 'confirmar_eliminar.html'
+    template_name = 'blog/confirmar_eliminar_articulo.html'
+    success_url = reverse_lazy('apps.blog:lista_articulos')
 
     def test_func(self):
         articulo = self.get_object()
         return self.request.user.is_superuser or (self.request.user.es_colaborador and articulo.autor == self.request.user)
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tipo_objeto'] = 'artículo'
@@ -128,7 +155,7 @@ class ComentarioCreateView(LoginRequiredMixin, CreateView):
         else:
             messages.success(self.request, 'Comentario enviado para aprobaión.')
         return super().form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.kwargs['articulo_id']})
 
@@ -140,21 +167,21 @@ class ComentarioUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         return self.get_object().puede_editar(self.request.user)
-    
+
     def form_valid(self, form):
         messages.success(self.request, 'Comentario actualizado exitosamente.')
         return super().form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo.pk})
 
 
 class ComentarioDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ComentarioArticulo
-    template_name = 'confirma_eliminar.html'
+    template_name = 'blog/confirma_eliminar_comentario.html'
 
     def test_func(self):
         return self.get_object().puede_editar(self.request.user)
-    
+
     def get_success_url(self):
         return reverse('apps.blog:detalle_articulo', kwargs={'pk': self.object.articulo.pk})

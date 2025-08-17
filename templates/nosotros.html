@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Quienes Somos{% endblock %}</title>
+
+{% block contenido %}
+
+    <div class="container mb-5 mt-5">
+        <div class="card shadow-sm mt-3 mb-4">
+            <div class="card-header text-bg-success p-3">
+                <h1 class="text-center">
+                    Sobre Nosotros
+                </h1>
+            </div>
+            <div class="card-body bg-success-subtle">
+                <div class="card-text lh-lg mb-4">
+                    <p class="h5 text-dark lh-lg mt-4" style="text-indent: 2rem;">Somos un grupo de <strong>7 programadores</strong> en formación cursando la Etapa 2 del <a href="https://campus-informatorio.chaco.gob.ar/" class="link-primary">Informatorio</a>.Donde nos formandonos en backend usando el framework web Django.</p>
+                    <p class="h5 text-dark lh-lg" style="text-indent: 2rem;">Este blog con temática de videojuegos es nuestro <strong>proyecto final</strong>, diseñado para aplicar los conocimientos aprendidos durante la cursada.Que incluye desde la creación de modelos y vistas hasta realizar el despliegue de la pagina web en PythoAnywhere.</p>
+                    <p class="h5 text-dark lh-lg" style="text-indent: 2rem;">Stack técnico:</p>
+                    <ul class="list-group list-group-horizontal ms-5">
+                        <li class="list-group-item"><span class="badge bg-dark mx-1 text-center">
+                            <i class="fa-solid fa-code"></i> Django 5.2.4</span></li>
+                        <li class="list-group-item"><span class="badge bg-success mx-1 text-center">
+                            <i class="fa-solid fa-database"></i> Python 3.13</span></li>
+                        <li class="list-group-item"><span class="badge bg-primary mx-1 text-center">
+                            <i class="fa-brands fa-bootstrap"></i> Bootstrap 5</span></li>
+                        <li class="list-group-item"><span class="badge bg-secondary mx-1 text-center">
+                            <i class="fa-solid fa-database"></i> MySQL</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="card shadow-sm mt-4">
+            <div class="card-header bg-primary p-3">
+                <h1 class="text-white text-center">Miembros del grupo</h1>
+            </div>
+            <div class="card-body bg-secondary-subtle p-4">
+                <div class="row row-cols-1 row-cols-md-3 mt-4 mb-4 gap-1 justify-content-around">
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Walter, Javier Matias</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/JaviWalter" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5493624205211" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Mora, Franco Agustin</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/Francoamora" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5493482277706" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Rodriguez, Alejandra Jimena</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/jimerodriguez85" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5492974734586" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Corea, Héctor Enrique</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/Corea331" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5493624727557" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Gallozo, Anibal</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/Anibal741" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5493625451176" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Ortiz, Silvina Ailin</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/Silvina05" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5493718599661" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col mb-4">
+                        <div class="card shadow-sm border-black border-2">
+                            <div class="card-body bg-secondary text-center ">
+                                <h5 class="text-white">Lopez, Alexis Joel</h5>
+                            </div>
+                            <div class="card-footer bg-info-subtle d-flex justify-content-center gap-3">
+                                <a href="https://github.com/LopezJoel10" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-github"></i>
+                                </a>
+                                <a href="https://wa.me/+5493644369372" target="_blank" class="btn btn-outline-primary">
+                                    <i class="fa-brands fa-whatsapp"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}

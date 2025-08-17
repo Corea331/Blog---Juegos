@@ -16,13 +16,13 @@
     <link href="https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
 
     <!-- CSS propio -->
-    <link rel="stylesheet" href="static/css/estilos.css'">
-    {% block extra_css %} {% endblock %}
+    <link rel="stylesheet" href="{% static 'css/estilos.css' %}">
 
-    
+
+
 </head>
 
-<body class="bg-secondary-subtle">
+<body class="conteiner-fluid" style="backgrund-color: #0A1828">
     <header>
         <nav class="navbar navbar-expand-lg bg-primary-subtle">
             <div class="container">
@@ -46,12 +46,17 @@
                         </li>
                         <li class="nav-item ">
                             <a href="{% url 'apps.games:lista_juegos' %}" class="nav-link {% if '/games' in request.path %}active{% endif %}">
-                                <i class="fas-fa-gamepad"></i> Juegos
+                                <i class="fas fa-gamepad"></i> Juegos
+                            </a>
+                        </li>
+                        <li class="nav-item ">
+                            <a href="{% url 'quienes_somos' %}" class="nav-link {% if '/quienes_somos' in request.path %}active{% endif %}">
+                                <i class="fas fa-people-group"></i> Sobre Nosotros
                             </a>
                         </li>
                     </ul>
                     <ul class="navbar-nav">
-                        {% if user.is_authenticated %} 
+                        {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a href="#" class="nav-link dropdown-toggle" role="button" data-bs-toggle="dropdown">
                                 <i class="fas fa-user-circle"></i> {{ user.username }}
@@ -63,12 +68,12 @@
                                 <li><a href="{% url 'apps.users:update_user' pk=user.pk %}" class="dropdown-item">
                                     <i class="fas fa-edit"></i> Editar perfil
                                 </a></li>
-                                {% if user.es_colaborador or user.is_superuser %} 
+                                {% if user.es_colaborador or user.is_superuser %}
                                 <li><a href="{% url 'apps.users:list_users' %}" class="dropdown-item">
                                     <i class="fas fa-users"></i> Usuarios
                                 </a></li>
                                 {% endif %}
-                                {% if user.is_superuser %} 
+                                {% if user.is_superuser %}
                                 <li><a href="/admin/" class="dropdown-item">
                                     <i class="fas fa-cog"></i> Admin
                                 </a></li>
@@ -101,7 +106,7 @@
             </div>
         </nav>
     </header>
-    <main class="container-flid">
+    <main class="container">
 
     {% block contenido %}
 
@@ -135,7 +140,7 @@
         </div>
     </footer>
     <!-- Bootstrap JavaScript Libraries -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js" 
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
     integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r" crossorigin="anonymous">
     </script>
 

@@ -1,10 +1,10 @@
 from django.shortcuts import get_object_or_404, redirect
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from .models import Juego, ComentarioJuego
+from .models import Juego, ComentarioJuego, Plataforma, Genero, Puntuacion
 from django.urls import reverse, reverse_lazy
 from django.contrib import messages
-from .forms import ComentarioJuegoForm
+from .forms import ComentarioJuegoForm, PuntuarJuegoForm
 
 class JuegoListView(ListView):
     model = Juego
@@ -27,21 +27,66 @@ class JuegoDetailView(DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['comentario_form'] = ComentarioJuegoForm()
-        context['comentarios'] = self.object.comentarios.filter(aprobado=True)
+
+        if self.request.user.is_authenticated:
+            try:
+                context['mi_puntuacion'] = Puntuacion.objects.get(
+                    juego=self.object,
+                    usuario=self.request.user
+                ).valor
+            except Puntuacion.DoesNotExist:
+                pass
+
         return context
 
     def get_queryset(self):
         return Juego.objects.filter(activo=True)
 
+class PuntuarJuegoView(LoginRequiredMixin, FormView):
+    form_class = PuntuarJuegoForm
+    template_name = 'games/juego_detail.html'
+
+    def get_success_url(self ):
+        return reverse('apps.games:detalle_juego', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form):
+        juego = get_object_or_404(Juego, pk=self.kwargs['pk'])
+
+        try:
+            puntuacion, created = Puntuacion.objects.update_or_create(
+                juego = juego,
+                usuario = self.request.user,
+                defaults = {'valor': form.cleaned_data['valor']}
+                )
+            msg = '¡Puntuación actualizada!' if not created else '¡Gracias por tu puntuación!'
+            messages.success(self.request, msg)
+        except Exception as e:
+            messages.error(self.request, f'Error al guardar la puntuación: {str(e)}')
+            return self.form_invalid(form)
+
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Error al procesar la puntuación')
+
+        return super().form_invalid(form)
+
 class JuegoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = Juego
-    fields = ['titulo', 'descripcion', 'fecha_lanzamiento', 'desarrollador', 
+    fields = ['titulo', 'descripcion', 'fecha_lanzamiento', 'desarrollador',
             'editor', 'imagen_portada', 'video_trailer_url', 'plataformas', 'generos']
     template_name = 'games/juego_form.html'
+    success_url = reverse_lazy('apps.games:lista_juegos')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plataformas'] = Plataforma.objects.all().order_by('nombre')
+        context['generos'] = Genero.objects.all().order_by('nombre')
+        return context
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.es_colaborador
-    
+
     def form_valid(self, form):
         form.instance.agregado_por = self.request.user
         messages.success(self.request, 'Juego creado correctamente.')
@@ -49,34 +94,41 @@ class JuegoCreateView(LoginRequiredMixin, UserPassesTestMixin, CreateView):
 
 class JuegoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Juego
-    fields = ['titulo', 'descripcion', 'fecha_lanzamiento', 'desarrollador', 
+    fields = ['titulo', 'descripcion', 'fecha_lanzamiento', 'desarrollador',
             'editor', 'imagen_portada', 'video_trailer_url', 'plataformas', 'generos']
     template_name = 'games/juego_form.html'
+    success_url = reverse_lazy('apps.games:lista_juegos')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['plataformas'] = Plataforma.objects.all().order_by('nombre')
+        context['generos'] = Genero.objects.all().order_by('nombre')
+        return context
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.es_colaborador
-    
+
     def form_valid(self, form):
         messages.success(self.request, 'Juego actualizado correctamente.')
         return super().form_valid(form)
 
 class JuegoDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Juego
-    template_name = 'confirmar_eliminar.html'
+    template_name = 'games/confirmar_eliminar_juego.html'
     success_url = reverse_lazy('apps.games:lista_juegos')
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.es_colaborador
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['tipo_objeto'] = 'juego'
         context['contenido_relacionado'] = {
             'comentarios': self.object.comentarios.count(),
-            'puntuaciones': self.object.puntuacion_set.count()
+            'puntuaciones': self.object.puntuaciones.count()
         }
         return context
-    
+
 
 def aprobar_comentario(request, pk):
     comentario = get_object_or_404(ComentarioJuego, pk=pk)
@@ -102,7 +154,7 @@ class ComentarioJuegoCreateView(LoginRequiredMixin, CreateView):
         else:
             messages.success(self.request, 'Comentario enviado para aprobación.')
         return super().form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('apps.games:detalle_juego', kwargs={'pk': self.kwargs['juego_id']})
 
@@ -114,21 +166,21 @@ class ComentarioJuegoUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateV
     def test_func(self):
         comentario = self.get_object()
         return self.request.user == comentario.usuario or self.request.user.has_perm('games.aprobar_comentario')
-    
+
     def form_valid(self, form):
         messages.success(self.request, 'Comentario actualizado exitosamente.')
         return super().form_valid(form)
-    
+
     def get_success_url(self):
         return reverse('apps.games:detalle_juego', kwargs={'pk': self.object.juego.pk})
 
 class ComentarioJuegoDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = ComentarioJuego
-    template_name = 'confirmar_eliminar.html'
+    template_name = 'games/confirmar_eliminar_comentario.html'
 
     def test_func(self):
         comentario = self.get_object()
         return self.request.user == comentario.usuario or self.request.user.has_perm('games.aprobar_comentario')
-    
+
     def get_success_url(self):
         return reverse('apps.games:detalle_juego', kwargs={'pk': self.object.juego.pk})

@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 
+<title>{% block title %}{% if request.resolver_match.url_name == 'crear_articulo' %}Crear{% elif request.resolver_match.url_name == 'editar_articulo' %}Editar{% endif %} Artículo{% endblock %}</title>
 
 {% block contenido %}
 
@@ -8,7 +9,7 @@
     <h2>{% if object %}Editar{% else %}Nuevo{% endif %} Artículo</h2>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        
+
         <!-- Información básica -->
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-light">
@@ -17,24 +18,24 @@
             <div class="card-body">
                 <div class="mb-3">
                     <label for="titulo" class="form-label">Título*</label>
-                    <input type="text" class="form-control" id="titulo" name="titulo" 
+                    <input type="text" class="form-control" id="titulo" name="titulo"
                         value="{{ form.titulo.value|default_if_none:'' }}" required>
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="subtitulo" class="form-label">Subtítulo</label>
-                    <input type="text" class="form-control" id="subtitulo" name="subtitulo" 
+                    <input type="text" class="form-control" id="subtitulo" name="subtitulo"
                         value="{{ form.subtitulo.value|default_if_none:'' }}">
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="contenido" class="form-label">Contenido*</label>
-                    <textarea class="form-control" id="contenido" name="contenido" 
+                    <textarea class="form-control" id="contenido" name="contenido"
                             rows="8" required>{{ form.contenido.value|default_if_none:'' }}</textarea>
                 </div>
             </div>
         </div>
-        
+
         <!-- Categoría -->
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-light">
@@ -44,18 +45,17 @@
                 <div class="mb-3">
                     <label for="categoria" class="form-label">Categoría*</label>
                     <select class="form-select" id="categoria" name="categoria" required>
-                        <option value="">Selecciona una categoría...</option>
+                        <option disabled {% if not form.categoria.value %}selected{% endif%} value="">Selecciona una categoría...</option>
                         {% for categoria in categorias %}
-                            <option value="{{ categoria.id }}" 
-                                    {% if form.categoria.value == categoria.id %}selected{% endif %}>
-                                {{ categoria.nombre }}
-                            </option>
+                        <option value="{{ categoria.pk }}" {% if form.categoria.value|add:"0" == categoria.pk|add:"0" %}selected{% endif %}>
+                            {{ categoria.nombre }}
+                        </option>
                         {% endfor %}
                     </select>
                 </div>
             </div>
         </div>
-        
+
         <!-- Multimedia -->
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-light">
@@ -72,15 +72,15 @@
                         </div>
                     {% endif %}
                 </div>
-                
+
                 <div class="mb-3">
                     <label for="imagen_url" class="form-label">O URL de Imagen</label>
-                    <input type="url" class="form-control" id="imagen_url" name="imagen_url" 
+                    <input type="url" class="form-control" id="imagen_url" name="imagen_url"
                         value="{{ form.imagen_url.value|default_if_none:'' }}" placeholder="https://ejemplo.com/imagen.jpg">
                 </div>
             </div>
         </div>
-        
+
         <!-- Estado y publicación -->
         <div class="card mb-4 shadow-sm">
             <div class="card-header bg-light">
@@ -89,20 +89,20 @@
             <div class="card-body">
                 {% if object %}
                 <div class="form-check form-switch mb-3">
-                    <input class="form-check-input" type="checkbox" id="activo" name="activo" 
+                    <input class="form-check-input" type="checkbox" id="activo" name="activo"
                         {% if form.activo.value %}checked{% endif %}>
                     <label class="form-check-label" for="activo">Publicado</label>
                 </div>
                 {% endif %}
-                
+
                 <div class="mb-3">
                     <label for="fecha_publicacion" class="form-label">Fecha de Publicación</label>
-                    <input type="datetime-local" class="form-control" id="fecha_publicacion" name="fecha_publicacion" 
+                    <input type="datetime-local" class="form-control" id="fecha_publicacion" name="fecha_publicacion"
                         value="{{ form.fecha_publicacion.value|default_if_none:'' }}">
                 </div>
             </div>
         </div>
-        
+
         <div class="d-grid gap-2 d-md-flex justify-content-md-end mb-4">
             <button type="submit" class="btn btn-primary me-md-2">
                 <i class="fas fa-save"></i> Publicar

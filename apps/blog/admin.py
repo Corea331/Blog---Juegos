@@ -9,7 +9,7 @@ from .models import Categoria_blog, Articulo, ComentarioArticulo
 class CategoriaBlogAdmin(admin.ModelAdmin):
 
     list_display = ('nombre', 'articulos_count', 'descripcion_corta')
-    search_fields = ('nombre', 'descripcion') 
+    search_fields = ('nombre', 'descripcion')
 
     def descripcion_corta(self, obj):
         return obj.descripcion[:50] + "..." if len(obj.descripcion) > 50 else obj.descripcion
@@ -27,7 +27,7 @@ class ArticuloAdmin(admin.ModelAdmin):
     list_filter = ('activo', 'categoria', 'fecha_publicacion')
     search_fields = ('titulo', 'contenido', 'autor__username')
     date_hierarchy = 'fecha_publicacion' # Permite navegar por fecha de publicación
-    ordering = ('-fecha_publicacion',) 
+    ordering = ('-fecha_publicacion',)
     raw_id_fields = ('autor', 'categoria') # Para campos ForeignKey, mejora la UX en el admin
     fieldsets = (
         ('Información', {
@@ -52,7 +52,7 @@ class ArticuloAdmin(admin.ModelAdmin):
 
     def categoria_link(self, obj):
         if obj.categoria:
-            return format_html('<a href="admin/blog/categoria_blog/{}/change">{}</a>', obj.categoria.id, obj.categoria.nombre)
+            return format_html('<a href="admin/blog/categoria_blog/{}/change">{}</a>', obj.categoria.pk, obj.categoria.nombre)
         return "-"
     categoria_link.short_description = 'Categoría'
 
@@ -75,11 +75,11 @@ class ComentarioArticuloAdmin(admin.ModelAdmin):
     actions = ['aprobar_comentarios', 'rechazar_comentarios']
 
     def articulo_link(self, obj):
-        return format_html('<a href="/admin/blog/articulo/{}/change/">{}</a>', obj.articulo.id, obj.articulo.titulo[:30])
+        return format_html('<a href="/admin/blog/articulo/{}/change/">{}</a>', obj.articulo.pk, obj.articulo.titulo[:30])
     articulo_link.short_description = 'Artículo'
 
     def usuario_link(self, obj):
-        return format_html('<a href="/admin/auth/user/{}/change/">{}</a>', obj.usuario.id, obj.usuario.username)
+        return format_html('<a href="/admin/auth/user/{}/change/">{}</a>', obj.usuario.pk, obj.usuario.username)
     usuario_link.short_description = 'Usuario'
 
     def texto_corto(self, obj):

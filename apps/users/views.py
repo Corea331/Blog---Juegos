@@ -3,7 +3,6 @@ from allauth.account.views import PasswordResetView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
 from django.contrib.messages.views import SuccessMessageMixin
-from django.shortcuts import render
 from django.urls import reverse_lazy
 from apps.blog.models import ComentarioArticulo
 from .forms import RegisterUserForm, CustomPasswordResetForm, UpdateUserForm
@@ -18,7 +17,7 @@ class UserListView(LoginRequiredMixin, UserPassesTestMixin, ListView):
 
     def test_func(self):
         return self.request.user.is_superuser or self.request.user.es_colaborador
-    
+
     def get_queryset(self):
         if self.request.user.is_superuser:
             return User.objects.all()
@@ -29,7 +28,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
     model = User
     template_name = 'users/user_detail.html'
     context_object_name = 'usuario'
-    
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         user = self.get_object()
@@ -54,15 +53,15 @@ class UpdateUserView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     def test_func(self):
         user = self.get_object()
         return self.request.user.is_superuser or (self.request.user == user)
-    
+
     def form_valid(self, form):
         messages.success(self.request, 'Perfil actualizado correctamente.')
         return super().form_valid(form)
-    
+
 
 class DeleteUserView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = User
-    template_name = 'confirmar_eliminar.html'
+    template_name = 'users/confirmar_eliminar_usuario.html'
     success_url = reverse_lazy('apps.users:list_users')
 
     def test_func(self):
@@ -70,15 +69,20 @@ class DeleteUserView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
         current_user = self.request.user
         if target_user.is_superuser:
             return current_user.is_superuser
+
         return current_user.is_superuser or current_user.es_colaborador
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['tipo_objeto'] = 'usuario'
-        context['contenido_relacionado'] = {
-            'artículos': self.object.articulos_publicados.count(),
-            'comentarios': ComentarioArticulo.objects.filter(usuario=self.object).count()
-        }
+        user = self.get_object()
+        context.update({
+            'tipo_objeto': 'usuario',
+            'object': user,
+            'contenido_relacionado': {
+                'artículos': self.object.articulos_publicados.count(),
+                'comentarios': ComentarioArticulo.objects.filter(usuario=self.object).count()
+            }
+        })
         return context
 
 

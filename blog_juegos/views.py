@@ -1,4 +1,5 @@
 from django.views.generic import TemplateView
+from django.shortcuts import render
 from apps.blog.models import Articulo
 from apps.games.models import Juego
 from django.db.models import Count
@@ -18,3 +19,6 @@ class HomeView(TemplateView):
         context['ultimos_articulos'] = Articulo.objects.filter(activo=True, fecha_publicacion__isnull=False).order_by('-fecha_publicacion')[:4]
 
         return context
+
+def sobre_nosotros(request):
+    return render(request, 'nosotros.html')

@@ -4,55 +4,64 @@
 <title>{% block title %}Inicio - Joystick Datamined{% endblock %}</title>
 
 {% block contenido %}
+
 <div class="container mb-5">
     <h2 class="text-center mb-4">Últimos Juegos</h2>
     <div id="juegosCarousel" class="carousel slide" data-bs-ride="carousel">
         <div class="carousel-indicators">
             {% for juego in ultimos_juegos %}
-                <button type="button" data-bs-target="#juegosCarousel" data-bs-slide-to="{{ forloop.counter0 }}" 
-                {% if forloop.first %}class="active" aria-current="true"{% endif %} 
+                <button type="button" data-bs-target="#juegosCarousel" data-bs-slide-to="{{ forloop.counter0 }}"
+                {% if forloop.first %}class="active" aria-current="true"{% endif %}
                 aria-label="Slide {{ forloop.counter }}"></button>
             {% endfor %}
         </div>
-        <div class="carousel-inner rounded">
+        <div class="carousel-inner rounded" style="height: 500px; overflow: hidden;">
             {% for juego in ultimos_juegos %}
-            <div class="carousel-item {% if forloop.first %}active{% endif %}">
-                <img src="{% if juego.imagen_portada %}{{ juego.imagen_portada.url }}{% else %}https://placehold.co/800x400/FABD43/FA0101?text=Imagen+no+disponible&amp;font=montserrat{% endif %}" alt="{{ juego.titulo }}" style="max-height: 400px; object-fit: cover;">
-                <div class="carousel-caption d-none d-md-block bg-dark bg-opacity-75 rounded">
-                    <h5>{{ juego.titulo }}</h5>
-                    <p>{{juego.descripcion|truncatechars:100 }}</p>
-                    <a href="#" class="btn btn-primary">Ver más</a>
+            <div class="carousel-item {% if forloop.first %}active{% endif %}" style="height: 100%;">
+                <div class="position-relative h-100">
+                    <img src="{% if juego.imagen_portada %}{{ juego.imagen_portada.url }}{% else %}https://placehold.co/800x400/FABD43/FA0101?text=Imagen+no+disponible&amp;font=montserrat{% endif %}"
+                         alt="{{ juego.titulo }}"
+                         class="d-block w-100 h-100"
+                         style="object-fit: cover;">
+                    <div class="position-absolute bottom-0 start-0 end-0 p-3" style="background: rgba(0,0,0,0.7);">
+                        <h5 class="text-white">{{ juego.titulo }}</h5>
+                        <p class="text-white mb-2">{{ juego.descripcion|truncatechars:100 }}</p>
+                        <a href="{% url 'apps.games:detalle_juego' juego.pk %}" class="btn btn-primary btn-sm"
+                        style="z-index: 1100; position: relative">Ver más</a>
+                    </div>
                 </div>
             </div>
             {% empty %}
-            <div class="carousel-item active">
-                <img src="https://placehold.co/800x400/FABD43/FA0101?text=No+hay+juegos+disponibles&amp;font=montserrat" 
-                class="d-block w-100" alt="No hay Juegos">
+            <div class="carousel-item active h-100">
+                <img src="https://placehold.co/800x400/FABD43/FA0101?text=No+hay+juegos+disponibles&amp;font=montserrat"
+                     class="d-block w-100 h-100"
+                     alt="No hay Juegos"
+                     style="object-fit: cover;">
             </div>
             {% endfor %}
         </div>
-        <button type="button" class="carousel-control-prev" data-bs-target="#juegosCarousel" data-bs-slide="prev">
+        <button class="carousel-control-prev" type="button" data-bs-target="#juegosCarousel" data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
+            <span class="visually-hidden">Anterior</span>
         </button>
-        <button type="button" class="carousel-control-next" data-bs-target="#juegosCarousel" data-bs-slide="next">
+        <button class="carousel-control-next" type="button" data-bs-target="#juegosCarousel" data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
+            <span class="visually-hidden">Siguiente</span>
         </button>
     </div>
 </div>
 
-<div class="container">
+<div class="container mb-5">
     <h2 class="text-center mb-4">Artículos Destacados</h2>
     <div class="row row-cols-1 row-cols-md-3 g-4">
         {% for articulo in articulos_destacados %}
         <div class="col-md-4 mb-4">
             <div class="card h-100 shadow-sm">
-                {% if articulo.imagen_principal.url %}
-                <img src="{{ articulo.imagen_principal.url }}" alt="{{ articulo.titulo }}" class="card-img-top"
-                style="height: 200px; object-fit: cover;">
+                {% if articulo.imagen_principal %}
+                    <img src="{{ articulo.imagen_principal.url }}" alt="{{ articulo.titulo }}" class="card-img-top"
+                    style="height: 200px; object-fit: cover;">
                 {% else %}
-                <img src="https://placehold.co/300x200/FABD43/FA0101?text=Sin+imagen&amp;font=montserrat" alt="Sin imagen" class="card-img-top">
+                    <img src="https://placehold.co/300x200/FABD43/FA0101?text=Sin+imagen&amp;font=montserrat" alt="Sin imagen" class="card-img-top">
                 {% endif %}
                 <div class="card-body">
                     <h5 class="card-title">{{ articulo.titulo }}</h5>
@@ -65,7 +74,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-transparent">
-                    <a href="{% url 'apps.blog:detalle_articulo' pk=articulo.pk %}" class="btn btn-sm btn-outline-primary">
+                    <a href="{% url 'apps.blog:detalle_articulo' articulo.pk %}" class="btn btn-sm btn-outline-primary">
                         Leer más
                     </a>
                 </div>
@@ -79,8 +88,8 @@
     </div>
 </div>
 
-    <div class="container">
-    <h2 class="text-center mb-4">Juegos más comentados</h2>
+<div class="container mb-5">
+    <h2 class="text-center mb-4">Juegos Destacados</h2>
     <div class="row">
         {% for juego in juegos_destacados %}
         <div class="col-md-4 mb-4">
@@ -94,15 +103,19 @@
                 <div class="card-body">
                     <h5 class="card-title">{{ juego.titulo }}</h5>
                     <div class="mb-2">
-                        {% if juego.promedio_puntuacion > 0 %} 
-                            <span class="text-warning">
-                            {% with ''|center:juego.promedio_puntuacion as range %}
-                                {% for _ in range %}★{% endfor %}
-                            {% endwith %}
-                            </span>
-                            <small>({{ juego.promedio_puntuacion|floatformat:1 }}/5.0)</small>
+                        {% if juego.promedio_puntuacion %}
+                        <div class="d-flex bg-dark-subtle p-4 justify-content-center align-items-center">
+                            {% for i in "12345" %}
+                                {% if i|add:0 <= juego.promedio_puntuacion %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-secondary"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <small>{{ juego.promedio_puntuacion|floatformat:1 }}/5.0</small>
                         {% else %}
-                            <span class="text-muted">Sin puntuaciones aún</span>
+                        <span class="text-muted">Sin puntuaciones</span>
                         {% endif %}
                     </div>
                     <p class="card-text">{{ juego.descripcion|default:'Sin descripción'|truncatechars:100 }}</p>
@@ -118,47 +131,5 @@
         {% endfor %}
     </div>
 </div>
-    
-<div class="container mt-5">
-    <h2 class="text-center mb-4">Últimas Publicaciones</h2>
-    <div class="d-flex justify-content-end mb-4">
-        <a href="{% url 'apps.blog:lista_articulos' %}" class="btn btn-outline-primary">Ver Todos</a>
-    </div>
-    <div class="row">
-        {% for articulo in ultimos_articulos %}
-        <div class="col-lg-6 mb-4">
-            <div class="card h-100">
-                <div class="row g-0">
-                    <div class="col-md-4">
-                        {% if articulo.imagen_principal %}
-                            <img src="{{ articulo.imagen_principal.url }}" class="img-fluid rounded-start h-100" 
-                            alt="{{ articulo.titulo }}" style="object-fit: cover;">
-                            {% else %}
-                            <img src="https://placehold.co/300x200/FABD43/FA0101?text=Sin+imagen&amp;font=montserrat" 
-                            class="img-fluid rounded-start h-100" alt="Sin imagen">
-                        {% endif %}
-                    </div>
-                    <div class="col-md-8">
-                        <div class="card-body">
-                            <h5 class="card-title">{{ articulo.titulo }}</h5>
-                            <p class="card-text">{{ articulo.subtitulo|default:'Sin descripción'|truncatechars:100 }}</p>
-                            <p class="card-text">
-                                <small class="text-muted">
-                                    Publicado el {{articulo.fecha_publicacion|date:'d M Y' }}
-                                    {% if articulo.autor %}por {{ articulo.autor.username }} {% endif %}
-                                </small>
-                            </p>
-                            <a href="{% url 'apps.blog:detalle_articulo' pk=articulo.pk %}" class="btn btn-sm btn-primary">Leer más</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        {% empty %}
-        <div class="col-12">
-            <div class="alert alert-info text-center">No hay artículos recientes</div>
-        </div>
-        {% endfor %}
-    </div>
-</div>
+
 {% endblock %}

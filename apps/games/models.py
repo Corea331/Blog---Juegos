@@ -18,7 +18,7 @@ class Plataforma(models.Model):#id_plataforma se crea automáticamente como 'id'
 
     def __str__(self):
         return self.nombre
-    
+
 
 class Genero(models.Model):
     nombre = models.CharField(max_length=50, unique=True, verbose_name="Nombre del Género")
@@ -32,40 +32,38 @@ class Genero(models.Model):
     def __str__(self):
         return self.nombre
 
-    
+
 class Juego(models.Model):
     titulo = models.CharField(max_length=255, verbose_name="Título del Juego")
     descripcion = models.TextField(verbose_name="Descripción Completa")
     fecha_lanzamiento = models.DateField(verbose_name="Fecha de Lanzamiento")
-    desarrollador = models.CharField(max_length=100, null=True, blank=True, verbose_name="Desarrollador")
-    editor = models.CharField(max_length=100, null=True, blank=True, verbose_name="Editor")
+    desarrollador = models.CharField(max_length=100, null=True, blank=True)
+    editor = models.CharField(max_length=100, null=True, blank=True)
     imagen_portada = models.ImageField(
         upload_to='juegos/portadas/', # Los archivos se guardarán en MEDIA_ROOT/juegos/portadas/
         null=True,
         blank=True,
         verbose_name="Imagen de Portada"
     )
-    video_trailer_url = models.URLField(null=True, blank=True, verbose_name="URL del Trailer")
-    activo = models.BooleanField(default=True, verbose_name="Activo")
-    fecha_agregado = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Agregado")
+    video_trailer_url = models.URLField(null=True, blank=True)
+    activo = models.BooleanField(default=True)
+    fecha_agregado = models.DateTimeField(auto_now_add=True)
     agregado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET_NULL,
         null=True,
-        blank=True,
-        verbose_name="Agregado por"
+        blank=True
     )
-    
+
     # Relaciones Muchos a Muchos (Django crea tablas intermedias automáticamente)
-    plataformas = models.ManyToManyField(Plataforma, related_name='juegos', verbose_name="Plataformas")
-    generos = models.ManyToManyField(Genero, related_name='juegos', verbose_name="Géneros")
-    
+    plataformas = models.ManyToManyField(Plataforma, related_name='juegos')
+    generos = models.ManyToManyField(Genero, related_name='juegos')
+
     # Campo para almacenar el promedio de puntuación (se actualizará con lógica posterior)
     promedio_puntuacion = models.DecimalField(
-        max_digits=3, 
+        max_digits=3,
         decimal_places=2,
         default=0.00,
-        verbose_name="Puntuación Promedio"
     )
 
     class Meta:
@@ -73,29 +71,23 @@ class Juego(models.Model):
         verbose_name_plural = "Juegos"
         ordering = ['titulo'] # Ordenar por título por defecto
 
-    def plataformas_str(self):
-        return ", ".join([p.nombre for p in self.plataformas.all()])
-
     def __str__(self):
         return self.titulo
 
-    
+
 class Puntuacion(models.Model):
-    juego = models.ForeignKey(Juego, on_delete=models.CASCADE, verbose_name="Juego")
+    juego = models.ForeignKey(Juego, on_delete=models.CASCADE, related_name='puntuaciones')
     usuario = models.ForeignKey(
-        settings.AUTH_USER_MODEL, 
+        settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name="Usuario"
+        related_name = 'puntuaciones'
     )
     valor = models.IntegerField(
-        choices=[(i, str(i)) for i in range(1, 6)], # Puntuación de 1 a 5
-        verbose_name="Valor de la Puntuación"
+        choices=[(1, '1'), (2, '2'), (3, '3'), (4, '4'), (5, '5')], # Puntuación de 1 a 5
     )
-    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = "Puntuación"
-        verbose_name_plural = "Puntuaciones"
         unique_together = ('juego', 'usuario')#Un usuario solo puede puntuar un juego una vez
         ordering = ['-fecha_creacion']
 
@@ -104,29 +96,26 @@ class Puntuacion(models.Model):
 
 
 class ComentarioJuego(models.Model):
-    juego = models.ForeignKey(Juego, on_delete=models.CASCADE, verbose_name="Juego", related_name='comentarios')
+    juego = models.ForeignKey(Juego, on_delete=models.CASCADE, related_name='comentarios')
     usuario = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        verbose_name="Usuario"
+        related_name='comentarios'
     )
-    texto = models.TextField(verbose_name="Comentario")
-    fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
-    aprobado = models.BooleanField(default=False, verbose_name="Aprobado para Publicación")
+    texto = models.TextField()
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+    aprobado = models.BooleanField(default=False)
 
     class Meta:
-        db_table = 'games_comentariojuego'
-        verbose_name = "Comentario"
-        verbose_name_plural = "Comentarios"
         ordering = ['-fecha_creacion']
-        permissions = [('aprobar_comentario', 'Puede aprobar comentarios')] 
+        permissions = [('aprobar_comentario', 'Puede aprobar comentarios')]
 
     def __str__(self):
         return f"Comentario de {self.usuario.username} en {self.juego.titulo}"
-    
+
 @receiver([post_save, post_delete], sender=Puntuacion)
 def actualizar_promedio(sender, instance, **kwargs):
     juego = instance.juego
-    promedio = juego.puntuacion_set.aggregate(avg_puntuacion=Avg('valor'))['avg_puntuacion'] or 0.00
+    promedio = juego.puntuaciones.aggregate(avg_puntuacion=Avg('valor'))['avg_puntuacion'] or 0.00
     juego.promedio_puntuacion = round(promedio, 2)
-    juego.save(update_fields='promedio_puntuacion')
+    juego.save(update_fields=['promedio_puntuacion'])

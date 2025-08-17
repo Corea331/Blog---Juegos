@@ -1,36 +1,37 @@
 {% extends 'base.html' %}
 {% load static %}
 
-<title>{% block title %}Noticias{% endblock %}</title>
+<title>{% block title %}Artículos en {{ categoria }}{% endblock %}</title>
 
 {% block contenido %}
 
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
-        <h1 class="mb-4">Lista de Artículos</h1>
-        {% if user.is_authenticated and user.es_colaborador %}
-        <a href="{% url 'apps.blog:crear_articulo' %}">
-            <i class="fas fa-plus"></i> Nuevo Artículo
+        <h2 class="mb-4">Artículos en <span class="badge bg-primary-subtle text-dark">{{ categoria }}</span></h2>
+        <a href="{% url 'apps.blog:lista_articulos' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Volver a todos los artículos
         </a>
-        {% endif %}
     </div>
+
+    <div class="alert alert-primary">
+        <i class="fas fa-info-circle"></i> Mostrando artículos de la categoría <strong>{{ categoria }}</strong>.
+    </div>
+
     <hr class="mb-5">
 
-    {% if categorias %}
-        <div class="mb-4">
-            <h5>Explorar por categorías:</h5>
-            <div class="d-flex flex-wrap gap-2">
-                {% for categoria in categorias %}
-                    <a href="{% url 'apps.blog:articulo_por_categoria' categoria.nombre %}"
-                       class="badge bg-secondary text-decoration-none">
-                        {{ categoria.nombre }}
+    <div class="mb-4">
+        <h5>Otras categorías:</h5>
+        <div class="d-flex flex-wrap gap-2">
+            {% for cat in categorias %}
+                {% if cat.nombre != categoria %}
+                    <a href="{% url 'apps.blog:articulo_por_categoria' cat.nombre %}"
+                    class="badge bg-secondary text-decoration-none">
+                    {{ cat.nombre }}
                     </a>
-                {% endfor %}
-            </div>
+            {% endif %}
+        {% endfor %}
         </div>
-    {% endif %}
-
-    <hr class="mb-5">
+    </div>
 
     <div class="row row-cols-1 row-cols-md-2 g-4">
         {% for articulo in articulos %}
@@ -55,11 +56,6 @@
                         <div class="card-text">
                             <p>{{ articulo.contenido|truncatechars:100 }}</p>
                         </div>
-                        {% if articulo.categoria %}
-                            <span class="badge bg-info mb-2">
-                                {{ articulo.categoria.nombre }}
-                            </span>
-                        {% endif %}
                         <div class="d-flex justify-content-between align-items-center mt-3">
                             <small class="text-muted">
                                 {% if articulo.fecha_publicacion %}
@@ -85,8 +81,8 @@
             </div>
         {% empty %}
             <div class="col-12">
-                <div class="alert alert-info text-center">
-                    No hay artículos publicados en este momento
+                <div class="alert alert-warning text-center">
+                    No hay artículos publicados en la categoría <strong>{{ categoria }}</strong>.
                 </div>
             </div>
         {% endfor %}
@@ -96,7 +92,7 @@
     <nav aria-label="Page navigation" class="mt-4">
         <ul class="pagination justify-content-center">
             {% if page_obj.has_previous %}
-            <li class="page-item ">
+            <li class="page-item">
                 <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>

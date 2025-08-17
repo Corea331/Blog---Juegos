@@ -8,7 +8,7 @@
 <div class="container mt-5">
     <div class="d-flex justify-content-between align-items-center mb-4">
         <h1>Listado de Juegos</h1>
-        {% if user.is_authenticated and user.es_colaborador %} 
+        {% if user.is_authenticated and user.es_colaborador %}
         <a href="{% url 'apps.games:agregar_juego' %}">
             <i class="fas fa-plus"></i> Agregar Juego
         </a>
@@ -25,29 +25,29 @@
                 {% else %}
                 <img src="https://placehold.co/300x200/FABD43/FA0101?text=Sin+imagen&amp;font=montserrat" alt="Sin imagen" class="card-img-top">
                 {% endif %}
-            
+
                 <div class="card-body">
                     <h5 class="card-title">{{ juego.titulo }}</h5>
                     <div class="mb-2">
-                        {% if juego.promedio_puntuacion > 0 %}
-                        <span class="text-warning">
-                            {% for _ in "12345" %}
-                                {% if forloop.counter <= juego.promedio_puntuacion %}
-                                    &#9734;
+                        {% if juego.promedio_puntuacion %}
+                        <div class="d-flex bg-dark-subtle p-4 justify-content-center align-items-center">
+                            {% for i in "12345" %}
+                                {% if i|add:0 <= juego.promedio_puntuacion %}
+                                    <i class="fas fa-star text-warning"></i>
                                 {% else %}
-                                    &#9733;
+                                    <i class="far fa-star text-secondary"></i>
                                 {% endif %}
                             {% endfor %}
-                        </span>
-                        <small>({{ juego.promedio_puntuacion|floatformat:1 }}/5.0)</small>
+                        </div>
+                        <small>{{ juego.promedio_puntuacion|floatformat:1 }}/5.0</small>
                         {% else %}
-                        <span class="text-muted">Sin puntuaciones aún</span>
+                        <span class="text-muted">Sin puntuaciones</span>
                         {% endif %}
                     </div>
                     <p class="card-text">{{ juego.descripcion|truncatechars:100 }}</p>
                     <div class="d-flex justify-content-between aling-items center">
                         <small class="text-muted">
-                            {{ juego.fecha_publicacion|date:"d M Y" }}
+                            {{ juego.fecha_lanzamiento|date:"d M Y" }}
                         </small>
                         <span class="badge bg-primary">
                             <i class="fas fa-comment"></i> {{ juego.comentarios.count }}
@@ -55,7 +55,7 @@
                     </div>
                 </div>
                 <div class="card-footer bg-trasparent">
-                    <a href="{% url 'apps.games:detalle_juego' %}" class="btn btn-sm btn-outline-primary">
+                    <a href="{% url 'apps.games:detalle_juego' juego.pk %}" class="btn btn-sm btn-outline-primary">
                         Ver detalle
                     </a>
                 </div>
@@ -77,7 +77,7 @@
                 <a class="page-link" href="?page={{ page_obj.previous_page_number}}" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
                 </a>
-            </li>    
+            </li>
             {% endif %}
             {% for num in page_obj.paginator.page_range %}
             <li class="page-item {% if page_obj.number == num %}active{% endif %}" aria-current="page">
@@ -93,7 +93,7 @@
             {% endif %}
         </ul>
     </nav>
-    
+
     {% endif %}
 </div>
 

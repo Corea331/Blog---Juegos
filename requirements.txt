@@ -3,7 +3,6 @@ crispy-bootstrap5==2025.6
 Django==5.2.4
 django-allauth==65.10.0
 django-crispy-forms==2.4
-mariadb==1.1.13
 mysqlclient==2.2.7
 packaging==25.0
 pillow==11.3.0

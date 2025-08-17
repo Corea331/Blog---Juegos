@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+<title>{% block title %}Confirmar Eliminación{% endblock %}</title>
+
+{% block contenido %}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-danger text-white">
+                    <h4>Confirmar eliminación de comentario</h4>
+                </div>
+                <div class="card-body">
+                    <p>¿Estás seguro de que deseas eliminar este comentario?</p>
+
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">
+                                {{ object.usuario.username }} - {{ object.fecha_creacion|date:"DATETIME_FORMAT" }}
+                            </h6>
+                            <p class="card-text">{{ object.contenido }}</p>
+                        </div>
+                    </div>
+
+                    <div class="alert alert-warning">
+                        <i class="fas fa-diamond-exclamation"></i>
+                        Esta acción no se puede deshacer. El comentario será eliminado permanentemente.
+                    </div>
+
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-flex justify-content-between mt-4">
+                            <a href="{% url 'apps.blog:detalle_articulo' object.articulo.pk %}" class="btn btn-secondary">
+                                <i class="fas fa-arrow-left"></i> Cancelar
+                            </a>
+                            <button type="submit" class="btn btn-danger">
+                                <i class="fas fa-trash"></i> Confirmar eliminación
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

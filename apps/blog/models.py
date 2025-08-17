@@ -2,7 +2,6 @@ from django.db import models
 from django.conf import settings
 from django.urls import reverse
 from django.contrib.auth import get_user_model
-from datetime import timezone
 
 # Create your models here.
 
@@ -34,7 +33,7 @@ class Articulo(models.Model):
     contenido = models.TextField(verbose_name="Contenido")
     fecha_creacion = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de Creación")
     fecha_publicacion = models.DateTimeField(blank=True, null=True, verbose_name="Fecha de Publicación")
-    activo = models.BooleanField(default=True, verbose_name="Activo")    
+    activo = models.BooleanField(default=True, verbose_name="Activo")
 
     autor = models.ForeignKey(
         User,
@@ -49,19 +48,19 @@ class Articulo(models.Model):
         Categoria_blog,
         on_delete=models.SET_NULL, # Si la categoría se elimina, la categoría del artículo se establece en NULL
         null=True,
-        blank=True,
+        blank=False,
         related_name='articulos', # Nombre inverso para acceder desde Categoria_blog
         verbose_name="Categoría"
     )
 
     # Campo para subir una imagen directamente
     imagen_principal = models.ImageField(
-        upload_to='blog/imagenes', 
-        blank=True, 
+        upload_to='blog/imagenes',
+        blank=True,
         null=True,
         verbose_name="Imagen Principal (Archivo)"
     )
-    
+
     # Nuevo campo para almacenar una URL de imagen
     imagen_url = models.URLField(
         blank=True,
@@ -101,16 +100,16 @@ class ComentarioArticulo(models.Model):
     class Meta:
         verbose_name = "Comentario"
         verbose_name_plural = "Comentarios"
-        ordering = ['-fecha_creacion'] 
+        ordering = ['-fecha_creacion']
         permissions = [('aprobar_comentario', 'Puede aprobar comentarios')]
 
     def __str__(self):
         return f"Comentario de {self.usuario.username} en {self.articulo.titulo}"
-    
+
     def puede_editar(self, usuario):
         return usuario == self.usuario or usuario.es_colaborador or usuario.is_superuser
-    
+
     def puede_eliminar(self, usuario):
         return self.puede_editar(usuario)
-    
+
 

@@ -11,6 +11,16 @@
 {% block contenido %}
 
 <div class="container mt-4">
+    {% if messages %}
+    <div class="mensajes mb-3 mt-3">
+        {% for message in messages %}
+        <div class="alert alert-dismissible alert-{{ message.tags }} fade show mb-3" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
     <div class="card shadow-sm p-4">
         <!-- Título del artículo -->
         <h1>{{ object.titulo }}</h1>
@@ -29,7 +39,7 @@
                     en <a href="{% url 'apps.blog:articulo_por_categoria' object.categoria.nombre %}">{{ object.categoria.nombre }}</a>
                 {% endif %}
             </small>
-            {% if user.is_authenticated and (user == obect.autor or user == user.es_colaborador) %}
+            {% if user.is_authenticated and user == object.autor or user.es_colaborador %}
             <div>
                 <a href="{% url 'apps.blog:editar_articulo' object.pk %}" class="btn btn-sm btn-warning">
                     <i class="fas fa-edit"></i> Editar
@@ -58,16 +68,16 @@
                 {{ object.contenido|linebreaks }}
             </div>
         </div>
-    
+
         <!-- Sección comentario -->
         <div class="mt-5">
             <h3>Comentarios</h3>
             <hr>
-            {% if user.is_authentiated %}
+            {% if user.is_authenticated %}
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title">Deja tu comentario</h5>
-                    <form action="{% url 'apps.blog:agrgar_comentario' object.pk %}" method="post">
+                    <form action="{% url 'apps.blog:agregar_comentario' object.pk %}" method="post">
                         {% csrf_token %}
                         {{ comentario_form|crispy:"bootstrap5"}}
                         <button type="submit" class="btn btn-primary mt-2">Publicar comentario</button>
@@ -79,16 +89,16 @@
                 Debes <a href="{% url 'apps.users:login' %}?next={{ request.path }}">Iniciar Sesión</a> para dejar tu comentario
             </div>
             {% endif %}
-        
+
             <!-- Lista de comentarios -->
             <div class="lista_comentarios">
                 {% for comentario in object.comentarios.all %}
                     {% if comentario.aprobado or comentario.user == user %}
-                    <div class="card mb-3 {% if not comentario.aprobado %}bg-ligth{% endif %}">
+                    <div class="card mb-3 {% if not comentario.aprobado %}bg-light{% endif %}">
                         <div class="card-body">
                             <div class="d-flex juestify-content-between">
                                 <h6 class="card-subtitle mb-2 text-muted">
-                                    <a href="{% url 'apps.users:datail_user' comentario.usuario.pk %}">
+                                    <a href="{% url 'apps.users:detail_user' comentario.usuario.pk %}">
                                         {{ comentario.usuario.username }}
                                     </a>
                                     <small>{{ comentario.fecha_creacion|date:'d M Y H:i' }}</small>
@@ -98,13 +108,13 @@
                                 {% endif %}
                             </div>
                             <div class="card-text">{{ comentario.texto|linebreaks }}</div>
-                            {% if comentario.usuario == user or user.has_perm('blog.aprobar_comentario') %}
+                            {% if comentario.usuario == user or perms.blog.aprobar_comentario %}
                             <div class="mt-2">
-                                <a href="{% url 'apps.blog:editar_comentario' comentario.pk %}" 
+                                <a href="{% url 'apps.blog:editar_comentario' comentario.pk %}"
                                     class="btn btn-sm btn-outline-secondary">
                                     <i class="fas fa-edit"></i> Editar
                                 </a>
-                                <a href="{% url 'apps.blog:eliminar_comentario' comentario.pk %}" 
+                                <a href="{% url 'apps.blog:eliminar_comentario' comentario.pk %}"
                                     class="btn btn-sm btn-outline-danger">
                                     <i class="fas fa-trash"></i> Eliminar
                                 </a>
