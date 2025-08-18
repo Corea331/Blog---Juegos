@@ -1,4 +1,4 @@
-asgiref==3.9.0
+easgiref==3.9.0
 crispy-bootstrap5==2025.6
 Django==5.2.4
 django-allauth==65.10.0
